@@ -26,8 +26,9 @@ public class TaskController {
     private UserService userService;
 
     @RequestMapping({"/", "/todo"})
-    public String taskList(Model model){
-        Iterable<Task> tasks = taskService.findAll();
+    public String taskList(Model model, Principal principal){
+                                        // Principal encapsulates all the authentication data
+        Iterable<Task> tasks = taskService.findAll(principal);
         model.addAttribute("tasks", tasks);
         model.addAttribute("newTask", new Task());
         return "todo";
@@ -41,12 +42,14 @@ public class TaskController {
     }
 
 
-//    @RequestMapping(path = "/tasks", method = RequestMethod.POST)
-//    public String addTask(@ModelAttribute Task task, Principal principal) {
-//        User user = (User)((UsernamePasswordAuthenticationToken)principal).getPrincipal();
-//        task.setUser(user);
-//        taskService.save(task);
-//        return "redirect:/";
-//    }
+    @RequestMapping(path = "/tasks", method = RequestMethod.POST)
+    public String addTask(@ModelAttribute Task task, Principal principal) {
+        User user = (User) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
+                    //By casting the principal to UsernamePasswordAuthenticationToken we, now, have access to the method
+                        // getPrincipal, this method return is going to be the object that implements UserDetail interface
+        task.setUser(user);
+        taskService.save(task);
+        return "redirect:/";
+    }
 
 }
