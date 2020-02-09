@@ -7,6 +7,8 @@ import spring.studies.todo.app.model.Task;
 import spring.studies.todo.app.repository.TaskRepository;
 import spring.studies.todo.app.service.TaskService;
 
+import java.security.Principal;
+
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -14,8 +16,8 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
 
     @Override
-    public Iterable<Task> findAll() {
-        return taskRepository.findAll();
+    public Iterable<Task> findAll(Principal principal) {
+        return taskRepository.findAllByUser_Username(principal.getName());
     }
 
     @Override
